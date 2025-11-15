@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flash AI - Feira de Ciências</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --accent: #facc15;
+      --accent-soft: rgba(250, 204, 21, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --radius-xl: 18px;
+      --radius-full: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(17,24,39,0.98));
+      border-radius: 28px;
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.8),
+        0 24px 80px rgba(0,0,0,0.75);
+      padding: 20px 22px 22px;
+      backdrop-filter: blur(16px);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #facc15, #f97316 40%, #0f172a 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 24px rgba(250,204,21,0.9),
+        0 0 80px rgba(250,204,21,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-circle span {
+      font-weight: 900;
+      font-size: 20px;
+      color: #020617;
+      text-shadow: 0 0 6px rgba(250,250,250,0.6);
+    }
+
+    .logo-glow {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(
+        from 0deg,
+        rgba(248,250,252,0.6),
+        transparent 35%,
+        rgba(252,211,77,0.8),
+        transparent 75%,
+        rgba(248,250,252,0.6)
+      );
+      mix-blend-mode: screen;
+      opacity: 0.45;
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .logo-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-text h1 {
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-text h1 span.flash {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-flash {
+      font-size: 11px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid rgba(250, 204, 21, 0.4);
+      color: #facc15;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .title-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .tagline {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pill {
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    .mode-switch {
+      display: flex;
+      gap: 8px;
+      background: rgba(15,23,42,0.9);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .mode-btn span.icon {
+      font-size: 14px;
+    }
+
+    .mode-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.6);
+      font-weight: 600;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        align-items: flex-start;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), #020617);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -80px;
+      background:
+        radial-gradient(circle at top left, rgba(250, 204, 21, 0.05), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(56,189,248,0.06), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.65);
+      color: var(--muted);
+      background: rgba(15,23,42,0.7);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chat-window {
+      flex: 1;
+      min-height: 180px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(15,23,42,0.85);
+      border: 1px dashed rgba(55,65,81,0.9);
+      position: relative;
+      z-index: 1;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      max-width: 90%;
+      display: flex;
+      gap: 8px;
+    }
+
+    .message.user {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .avatar.ai {
+      background: radial-gradient(circle at 30% 20%, #facc15, #f97316 60%, #0f172a 90%);
+      border-color: rgba(250,204,21,0.9);
+      color: #020617;
+      font-weight: 700;
+    }
+
+    .bubble {
+      padding: 8px 10px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .message.user .bubble {
+      background: linear-gradient(135deg, #38bdf8, #4ade80);
+      color: #0f172a;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.ai .bubble {
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.7);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.system .bubble {
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      text-align: center;
+      margin: 4px auto 8px;
+      color: var(--muted);
+    }
+
+    .input-area {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .input-area input[type="text"] {
+      flex: 1;
+      padding: 9px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .input-area input[type="text"]::placeholder {
+      color: rgba(148,163,184,0.95);
+    }
+
+    .input-area input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.35);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 13px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      color: #111827;
+      box-shadow:
+        0 0 0 1px rgba(251,191,36,0.6),
+        0 10px 30px rgba(248, 250, 252, 0.1);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+      filter: brightness(0.96);
+    }
+
+    .btn.secondary {
+      background: rgba(15,23,42,0.95);
+      color: var(--text);
+      border: 1px solid rgba(148,163,184,0.8);
+      box-shadow: none;
+    }
+
+    .btn.small {
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+
+    .btn[disabled] {
+      opacity: 0.7;
+      cursor: not-allowed;
+      filter: grayscale(0.2);
+    }
+
+    .status {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--muted);
+    }
+
+    .status-dot.online {
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34,197,94,0.7);
+    }
+
+    .status-dot.speaking {
+      background: #f97316;
+      box-shadow: 0 0 10px rgba(249,115,22,0.8);
+    }
+
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 8px rgba(248,113,113,0.8);
+    }
+
+    .voice-circle {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      margin: 12px auto 8px;
+      background: radial-gradient(circle at 30% 20%, #facc15, #fb923c 45%, #020617 85%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 30px rgba(250,204,21,0.9),
+        0 0 100px rgba(248,250,252,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .voice-circle::before {
+      content: "";
+      position: absolute;
+      inset: 10%;
+      border-radius: 50%;
+      border: 2px solid rgba(248,250,252,0.5);
+      opacity: 0.9;
+    }
+
+    .voice-circle .mic {
+      position: relative;
+      z-index: 1;
+      font-size: 32px;
+      color: #020617;
+      text-shadow: 0 0 6px rgba(248,250,252,0.7);
+    }
+
+    .voice-circle.pulse::after {
+      content: "";
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      border-radius: 50%;
+      border: 2px solid rgba(250,204,21,0.5);
+      animation: pulse 1.4s infinite ease-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    .voice-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .voice-textarea {
+      width: 100%;
+      min-height: 70px;
+      max-height: 130px;
+      margin-top: 6px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: rgba(15,23,42,0.92);
+      color: var(--text);
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .voice-textarea::placeholder {
+      color: rgba(148,163,184,0.95);
+    }
+
+    .split-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 10px;
+      color: var(--muted);
+      align-items: center;
+    }
+
+    .split-footer span strong {
+      color: #e5e7eb;
+    }
+
+    code {
+      font-size: 11px;
+      background: rgba(15,23,42,0.85);
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+    }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .api-key-area {
+      margin-top: 4px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .api-key-area input {
+      flex: 1;
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 11px;
+    }
+
+    .api-key-area input::placeholder {
+      color: rgba(107,114,128,0.95);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title-area">
+        <div class="logo-circle">
+          <div class="logo-glow"></div>
+          <div class="logo-inner">
+            <span>⚡</span>
+          </div>
+        </div>
+        <div class="title-text">
+          <h1>
+            <span class="flash">Flash AI</span>
+            <span class="badge-flash">Feira de Ciências</span>
+          </h1>
+          <p class="tagline">
+            Um agente inteligente que conversa por texto e por voz sobre ciência, tecnologia e curiosidades do universo!
+          </p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="pill">
+          <div class="pill-dot"></div>
+          <span>Motor: GPT-5.1 Thinking (OpenAI)</span>
+        </div>
+        <div class="mode-switch">
+          <button class="mode-btn active" data-mode="text">
+            <span class="icon">💬</span>
+            Texto
+          </button>
+          <button class="mode-btn" data-mode="voice">
+            <span class="icon">🎙️</span>
+            Voz
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- AGENTE DE TEXTO -->
+      <section class="card" id="text-card">
+        <div class="card-header">
+          <div class="card-title">
+            💬 Agente de Texto
+            <span class="chip">Pergunte sobre IA, espaço, biologia, física...</span>
+          </div>
+        </div>
+        <p class="hint">
+          Dica: experimente perguntar coisas como <strong>“Explique inteligência artificial como se eu tivesse 10 anos”</strong> ou
+          <strong>“Como funciona um buraco negro?”</strong>
+        </p>
+
+        <div class="chat-window" id="chat-window">
+          <div class="message system">
+            <div class="bubble">
+              Flash AI está pronto! Faça uma pergunta sobre ciência, tecnologia ou curiosidades e eu respondo. 😊
+            </div>
+          </div>
+        </div>
+
+        <div class="input-area">
+          <input
+            type="text"
+            id="text-input"
+            placeholder="Digite sua pergunta aqui..."
+          />
+          <button class="btn" id="send-btn">
+            <span>Enviar</span> ⚡
+          </button>
+        </div>
+        <div class="status" id="text-status">
+          <div class="status-dot online"></div>
+          <span>Pronto para conversar.</span>
+        </div>
+
+        <div class="api-key-area">
+          <span>API Key:</span>
+          <input
+            type="password"
+            id="api-key"
+            placeholder="cole aqui sua chave OpenAI (ex: sk-...) – para demonstração apenas"
+          />
+        </div>
+        <div class="error-msg" id="text-error"></div>
+      </section>
+
+      <!-- AGENTE DE VOZ -->
+      <section class="card" id="voice-card">
+        <div class="card-header">
+          <div class="card-title">
+            🎙️ Agente de Voz
+            <span class="chip">Fale com a Flash AI</span>
+          </div>
+        </div>
+        <p class="hint">
+          Clique em <strong>“Ouvir Pergunta”</strong>, faça sua pergunta em voz alta, e depois clique em
+          <strong>“Responder com IA”</strong> para ouvir a resposta.
+        </p>
+
+        <div class="voice-circle" id="voice-circle">
+          <span class="mic">🎤</span>
+        </div>
+
+        <div class="voice-controls">
+          <button class="btn secondary small" id="listen-btn">
+            🎧 Ouvir pergunta
+          </button>
+          <button class="btn small" id="voice-send-btn">
+            ⚡ Responder com IA
+          </button>
+          <button class="btn secondary small" id="stop-voice-btn">
+            ⏹ Parar voz
+          </button>
+        </div>
+
+        <textarea
+          class="voice-textarea"
+          id="voice-text"
+          placeholder="Aqui aparece o que você falou. Você também pode digitar a pergunta se preferir."
+        ></textarea>
+
+        <div class="status" id="voice-status">
+          <div class="status-dot"></div>
+          <span>Pronto para ouvir você.</span>
+        </div>
+        <div class="error-msg" id="voice-error"></div>
+
+        <div class="split-footer">
+          <span>
+            Reconhecimento de voz via
+            <strong>navegador</strong> (funciona melhor no Chrome).
+          </span>
+          <span>
+            Resposta falada usando <code>speechSynthesis</code>.
+          </span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ============== CONFIGURAÇÃO BÁSICA ==============
+
+    // IMPORTANTE: para uso real, NÃO deixe a chave exposta assim.
+    // O ideal é ter um backend que chama a API com segurança.
+    function getApiKey() {
+      const input = document.getElementById("api-key");
+      return (input && input.value.trim()) || "";
+    }
+
+    const SYSTEM_PROMPT = `
+Você é a Flash AI, uma inteligência artificial criada para uma feira de ciências escolar.
+- Fale em português do Brasil, com linguagem clara e amigável para crianças e adolescentes.
+- Explique conceitos de ciência, tecnologia e curiosidades de forma simples, mas correta.
+- Use exemplos do dia a dia para ajudar a entender.
+- Evite assuntos impróprios para crianças.
+- Se o aluno pedir, pode aprofundar a explicação de modo um pouco mais técnico, mas sempre explicando termos difíceis.
+`;
+
+    async function callFlashAI(userMessage) {
+      const apiKey = getApiKey();
+      const errorEl = document.getElementById("text-error");
+      const voiceErrorEl = document.getElementById("voice-error");
+      if (errorEl) errorEl.textContent = "";
+      if (voiceErrorEl) voiceErrorEl.textContent = "";
+
+      if (!apiKey) {
+        const msg = "Por favor, insira sua API key da OpenAI para usar a Flash AI.";
+        if (errorEl) errorEl.textContent = msg;
+        if (voiceErrorEl) voiceErrorEl.textContent = msg;
+        throw new Error(msg);
+      }
+
+      const url = "https://api.openai.com/v1/responses";
+
+      const body = {
+        model: "gpt-5.1-thinking",
+        input: userMessage,
+        reasoning: {
+          effort: "medium"
+        },
+        temperature: 0.7,
+        max_output_tokens: 600,
+        system_prompt: SYSTEM_PROMPT
+      };
+
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error("Erro da API:", text);
+        throw new Error("Erro ao chamar a API da OpenAI. Verifique a chave e o modelo.");
+      }
+
+      const data = await resp.json();
+
+      let textOutput = "";
+      if (data.output && data.output[0] && data.output[0].content) {
+        // Novo formato responses API
+        const part = data.output[0].content
+          .find(c => c.type === "output_text") || data.output[0].content[0];
+        textOutput = part ? part.text : "";
+      } else if (data.choices && data.choices[0] && data.choices[0].message) {
+        // fallback para formato de chat (caso mudem a API)
+        textOutput = data.choices[0].message.content;
+      } else {
+        textOutput = "Tive dificuldade para gerar a resposta. Tente de novo, por favor.";
+      }
+
+      return textOutput.trim();
+    }
+
+    // ============== AGENTE DE TEXTO ==============
+
+    const chatWindow = document.getElementById("chat-window");
+    const textInput = document.getElementById("text-input");
+    const sendBtn = document.getElementById("send-btn");
+    const textStatus = document.getElementById("text-status");
+    const textError = document.getElementById("text-error");
+
+    function appendMessage(role, text) {
+      if (!chatWindow) return;
+
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message");
+
+      if (role === "user") msgDiv.classList.add("user");
+      if (role === "ai") msgDiv.classList.add("ai");
+
+      const avatar = document.createElement("div");
+      avatar.classList.add("avatar");
+      if (role === "ai") avatar.classList.add("ai");
+
+      avatar.textContent = role === "user" ? "👤" : "⚡";
+
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble");
+      bubble.textContent = text;
+
+      msgDiv.appendChild(avatar);
+      msgDiv.appendChild(bubble);
+      chatWindow.appendChild(msgDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    async function handleSendText() {
+      const question = textInput.value.trim();
+      if (!question) return;
+
+      appendMessage("user", question);
+      textInput.value = "";
+
+      if (textStatus) {
+        textStatus.innerHTML = '<div class="status-dot online"></div><span>Pensando...</span>';
+      }
+      sendBtn.disabled = true;
+      textError.textContent = "";
+
+      try {
+        const answer = await callFlashAI(question);
+        appendMessage("ai", answer);
+        if (textStatus) {
+          textStatus.innerHTML = '<div class="status-dot online"></div><span>Pronto para a próxima pergunta.</span>';
+        }
+      } catch (err) {
+        console.error(err);
+        textError.textContent = err.message || "Erro desconhecido.";
+        if (textStatus) {
+          textStatus.innerHTML = '<div class="status-dot error"></div><span>Erro ao responder.</span>';
+        }
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    sendBtn.addEventListener("click", handleSendText);
+    textInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSendText();
+      }
+    });
+
+    // ============== AGENTE DE VOZ ==============
+
+    const voiceCircle = document.getElementById("voice-circle");
+    const listenBtn = document.getElementById("listen-btn");
+    const voiceSendBtn = document.getElementById("voice-send-btn");
+    const stopVoiceBtn = document.getElementById("stop-voice-btn");
+    const voiceText = document.getElementById("voice-text");
+    const voiceStatus = document.getElementById("voice-status");
+    const voiceError = document.getElementById("voice-error");
+
+    let recognition = null;
+    let isListening = false;
+    let isSpeaking = false;
+
+    function setupRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        voiceError.textContent = "Reconhecimento de voz não suportado neste navegador. Use o Chrome no computador ou Android.";
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot error"></div><span>Navegador sem suporte a voz.</span>';
+        }
+        return null;
+      }
+
+      const rec = new SpeechRecognition();
+      rec.lang = "pt-BR";
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      rec.onstart = () => {
+        isListening = true;
+        voiceCircle.classList.add("pulse");
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot speaking"></div><span>Ouvindo... fale sua pergunta.</span>';
+        }
+        voiceError.textContent = "";
+      };
+
+      rec.onerror = (event) => {
+        console.error("Erro de reconhecimento:", event.error);
+        voiceError.textContent = "Erro no reconhecimento de voz. Tente novamente.";
+        isListening = false;
+        voiceCircle.classList.remove("pulse");
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot error"></div><span>Erro ao ouvir.</span>';
+        }
+      };
+
+      rec.onend = () => {
+        isListening = false;
+        voiceCircle.classList.remove("pulse");
+        if (voiceStatus && !isSpeaking) {
+          voiceStatus.innerHTML = '<div class="status-dot"></div><span>Pronto para ouvir você.</span>';
+        }
+      };
+
+      rec.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        voiceText.value = transcript;
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot online"></div><span>Pergunta capturada. Clique em "Responder com IA".</span>';
+        }
+      };
+
+      return rec;
+    }
+
+    listenBtn.addEventListener("click", () => {
+      if (isListening) {
+        recognition && recognition.stop();
+        return;
+      }
+
+      if (!recognition) {
+        recognition = setupRecognition();
+        if (!recognition) return;
+      }
+
+      voiceError.textContent = "";
+      recognition.start();
+    });
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) {
+        voiceError.textContent = "Este navegador não suporta voz de saída (speechSynthesis).";
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "pt-BR";
+      utterance.rate = 1.02;
+      utterance.pitch = 1.0;
+
+      utterance.onstart = () => {
+        isSpeaking = true;
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot speaking"></div><span>Falando resposta...</span>';
+        }
+      };
+
+      utterance.onend = () => {
+        isSpeaking = false;
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot online"></div><span>Resposta concluída.</span>';
+        }
+      };
+
+      utterance.onerror = () => {
+        isSpeaking = false;
+        voiceError.textContent = "Erro ao reproduzir áudio.";
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot error"></div><span>Erro na fala.</span>';
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    voiceSendBtn.addEventListener("click", async () => {
+      const question = voiceText.value.trim();
+      if (!question) {
+        voiceError.textContent = "Digite ou fale uma pergunta antes.";
+        return;
+      }
+
+      voiceError.textContent = "";
+      if (voiceStatus) {
+        voiceStatus.innerHTML = '<div class="status-dot speaking"></div><span>Flash AI está pensando na resposta...</span>';
+      }
+      voiceSendBtn.disabled = true;
+
+      try {
+        const answer = await callFlashAI(question);
+        voiceText.value = "Pergunta: " + question + "\n\nResposta da Flash AI: " + answer;
+        speak(answer);
+      } catch (err) {
+        console.error(err);
+        voiceError.textContent = err.message || "Erro ao obter resposta da IA.";
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot error"></div><span>Erro ao responder.</span>';
+        }
+      } finally {
+        voiceSendBtn.disabled = false;
+      }
+    });
+
+    stopVoiceBtn.addEventListener("click", () => {
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        if (voiceStatus) {
+          voiceStatus.innerHTML = '<div class="status-dot online"></div><span>Voz interrompida.</span>';
+        }
+      }
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+    });
+
+    // ============== TROCA ENTRE MODO TEXTO / VOZ (VISUAL) ==============
+
+    const modeButtons = document.querySelectorAll(".mode-btn");
+    const textCard = document.getElementById("text-card");
+    const voiceCard = document.getElementById("voice-card");
+
+    function setMode(mode) {
+      modeButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+      });
+
+      if (mode === "text") {
+        textCard.style.opacity = "1";
+        textCard.style.transform = "scale(1)";
+        textCard.style.filter = "none";
+
+        voiceCard.style.opacity = "0.92";
+        voiceCard.style.transform = "scale(0.99)";
+      } else {
+        voiceCard.style.opacity = "1";
+        voiceCard.style.transform = "scale(1)";
+        voiceCard.style.filter = "none";
+
+        textCard.style.opacity = "0.92";
+        textCard.style.transform = "scale(0.99)";
+      }
+    }
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener("click", () => setMode(btn.dataset.mode));
+    });
+
+    setMode("text");
+  </script>
+</body>
+</html>
